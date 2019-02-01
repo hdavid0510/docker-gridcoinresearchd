@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GRC_CMD='gridcoinresearchd -rpcuser=$GRC_USERNAME -rpcpassword=$GRC_PASSWD'
+GRC_CMD="gridcoinresearchd -rpcuser=$GRC_USERNAME -rpcpassword=$GRC_PASSWD"
 
 case $1 in
 
