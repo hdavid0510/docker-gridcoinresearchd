@@ -6,7 +6,13 @@ RUN apt-get update -qq \
 	&& add-apt-repository -y ppa:gridcoin/gridcoin-stable \
 	&& apt-get update -qq \
 	&& apt-get install --no-install-recommends -y -q gridcoinresearchd boinc boinc-client boinctui
-RUN wget -O /usr/bin/gridcoinresearchd.sh https://github.com/elspru/docker-gridcoinresearchd/blob/master/gridcoinresearchd.sh \
+RUN echo -e '#!/bin/bash \n\
+if [! $(pgrep gridcoinresearchd) ]; then \n\
+	if [ -f /root/.GridcoinResearch/gridcoinresearch.conf ]; then ; /usr/bin/gridcoinresearchd && echo "gridcoinresearchd started!"\n\
+	else ; echo "please mount your $HOME/.GridcoinResearch to /root/.GridcoinResearch" \n\
+	fi \n\
+else ; /usr/bin/gridcoinresearchd $@ \n\
+fi' > /usr/bin/gridcoinresearchd.sh \
 	&& chmod +x /usr/bin/gridcoinresearchd.sh \
 	&& mkdir /root/.GridcoinResearch
 
