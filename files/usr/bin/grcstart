@@ -1,0 +1,23 @@
+#!/bin/bash
+
+GRC_CMD="/usr/bin/gridcoinresearchd -daemon \
+			-server \
+			-shrinkdebugfile \
+			-upnp \
+			-rpcuser=$GRC_USERNAME \
+			-rpcpassword=$GRC_PASSWD \
+			-blocknotify='exec /usr/bin/grcupdate'"
+
+if [! $(pgrep gridcoinresearchd) ]; then
+	# Start Gridcoin client
+	if [ -f /root/.GridcoinResearch/gridcoinresearch.conf ] ; then
+		# .GridcoinResearch folder is correctly mounted
+		$GRC_CMD && echo -e "gridcoinresearchd started!\n"
+	else
+		echo "please mount your $HOME/.GridcoinResearch to /root/.GridcoinResearch"
+	fi
+else
+	# Gridcoin client already running; "do nothing".
+	# Uncomment below to specify what to do
+	#/usr/bin/gridcoinresearchd $@
+fi
