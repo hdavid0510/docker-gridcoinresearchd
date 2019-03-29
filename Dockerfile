@@ -6,6 +6,7 @@ COPY files /
 RUN apt-get update -qq \
 	&& add-apt-repository -y ppa:gridcoin/gridcoin-stable \
 	&& apt-get update -qq \
+	&& apt-get upgrade -y -qq \
 	&& apt-get install --no-install-recommends -y -q \
 		gridcoinresearchd boinc boinc-client boinctui 
 RUN mkdir /root/.GridcoinResearch
