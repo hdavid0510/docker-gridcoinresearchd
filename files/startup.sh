@@ -27,9 +27,11 @@ g|grc|grcd|gridcoin)
 	start_grc_server
 	;;
 *)
-	echo usage: $(basename "$0") [(blank)|b|g]
-	echo (blank)	Run All
-	echo b	Run BOINC only
-	echo g	Run GridcoinResearch daemon only
+	echo usage:
+	echo $(basename $0)
+	echo -e "\tRun All"
+	echo "$(basename $0) [b|g]"
+	echo -e "\tb\tRun BOINC only"
+	echo -e "\tg\tRun GridcoinResearch daemon only"
 	echo ""
 esac
