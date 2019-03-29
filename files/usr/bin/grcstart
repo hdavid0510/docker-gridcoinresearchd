@@ -16,7 +16,7 @@ if [! $(pgrep gridcoinresearchd) ]; then
 	else
 		echo "please mount your $HOME/.GridcoinResearch to /root/.GridcoinResearch"
 	fi
-else
+#else
 	# Gridcoin client already running; "do nothing".
 	# Uncomment below to specify what to do
 	#/usr/bin/gridcoinresearchd $@
