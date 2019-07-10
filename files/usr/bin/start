@@ -1,9 +1,13 @@
 #!/bin/bash
 
+if [ -z $BOINC_DATADIR ] ; then
+	export BOINC_DATADIR="/var/lib/boinc-client"
+}
+
 # Server initiators #########
 start_boinc_daemon(){
 	echo "Starting BOINC daemon..."
-	boinc -daemon --allow_remote_gui_rpc --dir /var/lib/boinc-client
+	boinc -daemon --allow_remote_gui_rpc --dir $BOINC_DATADIR
 }
 
 start_grc_server(){
@@ -12,7 +16,7 @@ start_grc_server(){
 }
 
 # Docker image init #########
-echo $BOINC_PASSWD > /var/lib/boinc-client/gui_prc_auth.cfg
+echo $BOINC_PASSWD > $BOINC_DATADIR/gui_prc_auth.cfg
 
 # Instance Init #############
 case $1 in

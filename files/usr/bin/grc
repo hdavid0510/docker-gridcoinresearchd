@@ -1,6 +1,7 @@
 #!/bin/bash
 
 GRC_CMD="/usr/bin/gridcoinresearchd -rpcuser=$GRC_USERNAME -rpcpassword=$GRC_PASSWD"
+LOGFILE="~/.GridcoinResearch/debug.log"
 
 case $1 in
 
@@ -10,7 +11,14 @@ c|cmd)
 
 l)
 	clear
-	tail -f -n 40 ~/.GridcoinResearch/debug.log
+	tail -f -n 80 $LOGFILE
+	clear
+	;;
+
+cl)
+	clear
+	echo "" > 
+	tail -f $LOGFILE
 	clear
 	;;
 
@@ -52,6 +60,7 @@ a|address)
 	echo "options:"
 	echo -e "\tc\tCommand redirect: gridcoinresearchd (commands entered)"
 	echo -e "\tl\tLog view"
+	echo -e "\tcl\tLog clear and view"
 	echo -e "\tpc\tProcess Check"
 	echo -e "\tps\tProcess Stop(exit)"
 	echo -e "\tpk\tProcess Kill(force stop)"
