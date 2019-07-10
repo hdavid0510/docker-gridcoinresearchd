@@ -4,15 +4,19 @@
 GridcoinResearch Daemon server on top of ubuntu docker
 
 ## Prerequisites
-1. Bind Gridcoin Client data folder(`.GridcoinResearch`) stored in host device to `/root/.GridcoinResearch` inside container.
-2. Make sure if port for Gridcoin Client, `32749(tcp)` is opened.
-3. If you want to use BOINC client remote GUI, make sure if port `31416` is opened.
-4. To enable SSH outside, make sure port `22` is publically opened. _(not recommended for insecure environment)_
+1. Bind Gridcoin Client data folder(`.GridcoinResearch`) in HOST to `/root/.GridcoinResearch` in container.
+2. Make sure port `32749(tcp)` is opened for Gridcoin Client. Open port `32750` instead if using TestNet.
+3. Open port `31416` to use BOINC RPC.
+4. Open port `22` to enable SSH outbound. _not recommended for insecure environment!_
+5. Open port `32748` to use Gridcoin RPC
+6. Bind html file in host to `/blocks.html` in container to serve realtime-updated gridcoin status webpage.
 
 ## Environment variables
-| variable name | value 	|
-|--------------	|-------	|
-| GRC_USERNAME 	| Username for GridcoinResearch daemon RPC 	|
-| GRC_PASSWD 	| Password for GridcoinResearch daemon RPC 	|
-| BOINC_PASSWD 	| Password for BOINC client RPC GUI |
+| variable name |  |value 	|
+|--------------	|------- | ----	|
+| `GRC_USERNAME`    | Required | Username for GridcoinResearch daemon RPC 	|
+| `GRC_PASSWD` 	| Required | Password for GridcoinResearch daemon RPC 	|
+| `BOINC_PASSWD` 	| Required | Password for BOINC client RPC GUI |
+| `GRC_DATADIR` | Optional | Full path where .GridcoinResearch located |
+| `BOINC_DATADIR`  | Optional | Full path where .GridcoinResearch located |
 |   |   |
