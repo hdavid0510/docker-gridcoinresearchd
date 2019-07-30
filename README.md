@@ -3,20 +3,27 @@
 [![](https://images.microbadger.com/badges/image/hdavid0510/gridcoinresearch-client-daemon:latest.svg)](https://microbadger.com/images/hdavid0510/gridcoinresearch-client-daemon:latest)  
 GridcoinResearch Daemon server on top of ubuntu docker
 
-## Prerequisites
-1. Bind Gridcoin Client data folder(`.GridcoinResearch`) in HOST to `/root/.GridcoinResearch` in container.
-2. Make sure port `32749(tcp)` is opened for Gridcoin Client. Open port `32750` instead if using TestNet.
-3. Open port `31416` to use BOINC RPC.
-4. Open port `22` to enable SSH outbound. _not recommended for insecure environment!_
-5. Open port `32748` to use Gridcoin RPC
-6. Bind html file in host to `/blocks.html` in container to serve realtime-updated gridcoin status webpage.
+## Port Bindings
+| Option | Port# | Type | Service |
+| ------ | ----- | ---- | ------- |
+|__Required__|32749|tcp| Gridcoin Client|
+|_Optional_|22|tcp|SSH __Not recommended in insecure environment!__|
+|_Optional_|31416|tcp| BOINC RPC|
+|_Optional_|32750|tcp| Gridcoin TestNet|
+
+## Volume Bindings
+| Option | in Container | to Host | Note |
+| ------ | ------------ | ------- | ---- |
+|Recommended| `/root/.GridcoinResearch` | Directory to contain Gridcoin wallet data. | New default volume will be created if not specified. |
+|_Optional_| `/blocks.html` | Gridcoin status `.html` page to serve publically, in real-time. | |
+
 
 ## Environment variables
-| variable name |  |value 	|
-|--------------	|------- | ----	|
-| `GRC_USERNAME`    | Required | Username for GridcoinResearch daemon RPC 	|
-| `GRC_PASSWD` 	| Required | Password for GridcoinResearch daemon RPC 	|
-| `BOINC_PASSWD` 	| Required | Password for BOINC client RPC GUI |
-| `GRC_DATADIR` | Optional | Full path where .GridcoinResearch located |
-| `BOINC_DATADIR`  | Optional | Full path where .GridcoinResearch located |
-|   |   |
+| Option | Name | default | value |
+| ------ | ---- | ------- | ----- |
+|__*Required__|`GRC_USERNAME`	|_N/A_	|Username for GridcoinResearch daemon RPC	|
+|__*Required__|`GRC_PASSWD`	|_N/A_	|Password for GridcoinResearch daemon RPC	|
+|__*Required__|`BOINC_PASSWD`	|_Random_ [1]	|Password for BOINC client RPC GUI	|
+|_Optional_|`GRC_DATADIR`	|`/root/.GridcoinResearch`	|Full path of `.GridcoinResearch` __inside container__	|
+|_Optional_|`BOINC_DATADIR`|`/var/lib/boinc`	|Full path of BOINC data directory __inside container__	|
+[1] Random string with 32 HEX characters will be generated each time the container started.
