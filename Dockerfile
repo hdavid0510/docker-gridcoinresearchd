@@ -5,7 +5,7 @@ WORKDIR /root
 COPY files /
 
 # Activate copied files
-RUN		chmod 755 /usr/bin/bt /usr/bin/grc /usr/bin/grcupdate /usr/bin/start \
+RUN		chmod 755 /usr/bin/bt /usr/bin/grc /usr/bin/grcupdate /usr/bin/start /startup.sh \
 	&&	mkdir /root/.GridcoinResearch \
 	&&	echo -e "\n\n# Daemon startup script\n/usr/bin/start" >> /startup.sh
 
