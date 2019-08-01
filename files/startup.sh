@@ -32,3 +32,5 @@ if [ -z $BOINC_PASSWD ] ; then
 	export BOINC_PASSWD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 )
 fi
 echo $BOINC_PASSWD > $BOINC_DATADIR/gui_prc_auth.cfg
+
+exec /usr/bin/start

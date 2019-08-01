@@ -30,4 +30,4 @@ EXPOSE 32750/tcp
 ENV GRC_DATADIR /root/.GridcoinResearch
 ENV BOINC_DATADIR /var/lib/boinc
 
-ENTRYPOINT [ "/startup.sh" ]
+ENTRYPOINT [ "/bin/bash", "/startup.sh" ]
