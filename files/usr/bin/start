@@ -7,7 +7,7 @@ start_boinc(){
 }
 
 start_grcd(){
-	echo "[ \e[93mStarting\e[0m ] GRC client daemon"
+	echo -e "[ \e[93mStarting\e[0m ] GRC client daemon"
 
 	GRC_CMD="/usr/bin/gridcoinresearchd -daemon -server -shrinkdebugfile -upnp \
 			-rpcuser=$GRC_USERNAME -rpcpassword=$GRC_PASSWD \
@@ -19,13 +19,13 @@ start_grcd(){
 			# .GridcoinResearch folder is correctly mounted
 			$GRC_CMD && echo -e "[ \e[92mRunning\e[0m ] gridcoinresearchd\n"
 		else
-			echo "[ \e[93mError\e[0m ] "'gridcoinresearch.conf not found!'
+			echo -e "[ \e[93mError\e[0m ] "'gridcoinresearch.conf not found!'
 		fi
 	else
 		# Gridcoin client already running; "do nothing".
 		# Uncomment below to specify what to do
 		#/usr/bin/gridcoinresearchd $@
-		echo "[ \e[92mRunning\e[0m ] gridcoinresearchd already running."
+		echo -e "[ \e[92mRunning\e[0m ] gridcoinresearchd already running."
 	fi
 }
 

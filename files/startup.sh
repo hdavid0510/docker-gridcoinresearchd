@@ -1,10 +1,8 @@
 #!/bin/bash
 # Script runs on docker initialization
 
-# SSH server run
-exec /usr/sbin/sshd -D
-
 # Verify Gridcoin Daemon configuration valid
+echo "Gridcoin Daemon configuration check"
 if [ -z $GRC_USERNAME ] ; then
 	# Generate random HEX 32-char's long string as password
 	export GRC_USERNAME=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 )
@@ -27,10 +25,17 @@ if ! grep -q "rpcallowip" $GRC_DATADIR/gridcoinresearch.conf ; then
 fi
 
 # Update BOINC RPC passwd; generate one if not provided
+echo "Update BOINC RPC password"
 if [ -z $BOINC_PASSWD ] ; then
 	# Generate random HEX 32-char's long string as password
 	export BOINC_PASSWD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 )
 fi
 echo $BOINC_PASSWD > $BOINC_DATADIR/gui_prc_auth.cfg
 
+# Daemon start
+echo "Start daemons"
 exec /usr/bin/start
+
+# SSH server run
+echo "SSHD start"
+exec /usr/sbin/sshd -D
