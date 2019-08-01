@@ -13,7 +13,7 @@ start_grcd(){
 			-rpcuser=$GRC_USERNAME -rpcpassword=$GRC_PASSWD \
 			-blocknotify='exec /usr/bin/grcupdate'"
 
-	if [! $(pgrep gridcoinresearchd) ]; then
+	if ! pgrep "gridcoinresearchd" ; then
 		# Start Gridcoin client
 		if [ -f $GRC_DATADIR/gridcoinresearch.conf ] ; then
 			# .GridcoinResearch folder is correctly mounted
