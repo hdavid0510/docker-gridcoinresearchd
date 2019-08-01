@@ -15,7 +15,8 @@ GridcoinResearch Daemon server on top of ubuntu docker
 | Option | in Container | to Host | Note |
 | ------ | ------------ | ------- | ---- |
 |Recommended| `/root/.GridcoinResearch` | Directory to contain Gridcoin wallet data. | New default volume will be created if not specified. |
-|_Optional_| `/blocks.html` | Gridcoin status `.html` page to serve publically, in real-time. | |
+|_Optional_| `/grcupdate.sh` | Gridcoin status `.html` page to serve publically, in real-time. | |
+|_Optional_| `/blocks.html` | File updated by default `/grcupdate.sh` script; not needed if customized `/grcupdate.sh` don't use this file. | |
 
 
 ## Environment variables

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-BOINC_CMD="boinccmd --passwd $BOINC_PASSWD"
+BOINCCMD="boinccmd --passwd $BOINC_PASSWD"
 
 case $1 in
 
-s) # Suspend all
+s) # Suspend all tasks
 	echo "Suspending every tasks"
-	$BOINC_CMD --get_tasks \
+	$BOINCCMD --get_tasks \
 	|sed -r -e '/^   (name|project URL)/!d' -e 's/   name: //g' \
 	|sed -r -e ':a;N;$!ba;s/\n^   project URL://g' \
 	|awk -v boincpwd=$BOINC_PASSWD \
@@ -24,15 +24,15 @@ s) # Suspend all
 	
 sp) # Suspend all Projects
 	echo "Suspending every projects"
-	for url in $($BOINC_CMD --get_project_status | sed -n 's/\s*master URL: //p'); do
-		$BOINC_CMD --project ${url} "suspend"
+	for url in $($BOINCCMD --get_project_status | sed -n 's/\s*master URL: //p'); do
+		$BOINCCMD --project ${url} "suspend"
 		echo "Suspending project : ${url}"
 	done
 	;;
 	
-r) # Resume all
+r) # Resume all tasks
 	echo "Resuming every tasks"
-	$BOINC_CMD --get_tasks \
+	$BOINCCMD --get_tasks \
 	|sed -r -e '/^   (name|project URL)/!d' -e 's/   name: //g' \
 	|sed -r -e ':a;N;$!ba;s/\n^   project URL://g' \
 	|awk -v boincpwd=$BOINC_PASSWD \
@@ -50,15 +50,15 @@ r) # Resume all
 	
 rp) # Resume all Projects
 	echo "Resuming every projects"
-	for url in $($BOINC_CMD --get_project_status | sed -n 's/\s*master URL: //p'); do
-		$BOINC_CMD --project ${url} resume
+	for url in $($BOINCCMD --get_project_status | sed -n 's/\s*master URL: //p'); do
+		$BOINCCMD --project ${url} resume
 		echo "Resuming project : ${url}"
 	done
 	;;
 	
 a) # Abort all
 	echo "Aborting every tasks"
-	$BOINC_CMD --get_tasks \
+	$BOINCCMD --get_tasks \
 	|sed -r -e '/^   (name|project URL)/!d' -e 's/   name: //g' \
 	|sed -r -e ':a;N;$!ba;s/\n^   project URL://g' \
 	|awk -v boincpwd=$BOINC_PASSWD \
@@ -76,38 +76,44 @@ a) # Abort all
 	
 u) # Update all project and sync
 	echo "Updating every projects and syncing to account manager"
-	for url in $($BOINC_CMD --get_project_status | sed -n 's/\s*master URL: //p'); do
-		$BOINC_CMD --project ${url} update
+	for url in $($BOINCCMD --get_project_status | sed -n 's/\s*master URL: //p'); do
+		$BOINCCMD --project ${url} update
 		echo "Updating project : ${url}"
 	done
 	echo "Syncing account manager"
-	$BOINC_CMD --acct_mgr sync
+	$BOINCCMD --acct_mgr sync
 	echo ">> BOINC projects and account manager sync completed."
-	$BOINC_CMD --acct_mgr info
+	$BOINCCMD --acct_mgr info
 	;;
 	
-k) # Kill prcess
+k) # Kill daemon
 	killall boinc
 	;;
-	
-p) # Process check
+
+i) # Start daemon
+	echo -e "\e[93mStarting BOINC daemon\e[0m"
+	boinc -daemon --allow_remote_gui_rpc --dir $BOINC_DATADIR && \
+		echo -e "\e[92mRunning BOINC\e[0m"
+	;;
+
+p) # daemon check
 	ps -e | grep boinc
 	;;
 	
 c) # Command direct input
-	$BOINC_CMD $@
+	$BOINCCMD $@
 	;;
 	
 d) # Show status
-	$BOINC_CMD --get_state | more
+	$BOINCCMD --get_state | more
 	;;
 	
 m) # Messages
-	$BOINC_CMD --get_messages
+	$BOINCCMD --get_messages
 	;;
 	
 w) # Watch tasks
-	watch -n 1 "$BOINC_CMD --get_tasks | sed -r -e '/^   (name|project URL|active_task_state)/!d' -e 's/   name: //g' -e 's/   project URL: /\t/g' -e 's/   active_task_state: /\t/g'"
+	watch -n 1 "$BOINCCMD --get_tasks | sed -r -e '/^   (name|project URL|active_task_state)/!d' -e 's/   name: //g' -e 's/   project URL: /\t/g' -e 's/   active_task_state: /\t/g'"
 	exit
 	;;
 	
@@ -116,23 +122,24 @@ w) # Watch tasks
 	echo "Usage: bt [options]"
 	echo ""
 	echo "options:"
-	echo -e "\ts\tSuspend"
-	echo -e "\tsp\tSuspend Projects"
-	echo -e "\tr\tResume"
-	echo -e "\trp\tResume Projects"
-	echo -e "\ta\tabort"
-	echo -e "\tu\tUpdate(Sync)"
-	echo -e "\tk\tKill"
-	echo -e "\tp\tProcess check"
-	echo -e "\tc\tCommand to boinccmd"
+	echo -e "\ts\tSuspend all tasks (can fetch new tasks)"
+	echo -e "\tsp\tSuspend projects"
+	echo -e "\tr\tResume all tasks"
+	echo -e "\trp\tResume projects"
+	echo -e "\ta\tAbort all tasks"
+	echo -e "\tu\tUpdate(Sync) projects and manager"
+	echo -e "\tc\tDirect command to boinccmd"
 	echo -e "\td\tDetailed messages"
+	echo -e "\ti\tStart(init) BOINC daemon"
+	echo -e "\tk\tKill BOINC daemon"
+	echo -e "\tp\tCheck BOINC daemon running"
 	echo -e "\tw\tWatch tasks"
 	;;
 	
 esac
 
 echo "Current tasks:"
-$BOINC_CMD --get_tasks |\
+$BOINCCMD --get_tasks |\
 	sed -r -e '/^   (name|project URL|active_task_state)/!d'\
 	-e 's/   name: //g'\
 	-e 's/   project URL: /\t/g'\

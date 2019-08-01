@@ -5,36 +5,22 @@ LOGFILE="$GRC_DATADIR/debug.log"
 
 case $1 in
 
+a|address)
+	$GRC_CMD listaddressgroupings
+	;;
+	
+b|balance)
+	$GRC_CMD getbalance
+	;;
+
 c|cmd)
 	$GRC_CMD "${@:2}"
 	;;
 
-l)
-	clear
-	tail -f -n 80 $LOGFILE
-	clear
-	;;
-
-cl)
+d|clear|delete)
 	clear
 	echo "" > $LOGFILE
 	clear
-	;;
-
-pc|p)
-	ps -e | grep gridcoin
-	;;
-
-ps|k)
-	$GRC_CMD stop
-	echo Stopping gridcoinresearchd
-	ps -e | grep gridcoin
-	;;
-
-pk|kx)
-	killall gridcoinresearchd
-	echo Forcing gridcoinresearchd stop
-	ps -e | grep gridcoin
 	;;
 
 h|height)
@@ -43,29 +29,63 @@ h|height)
 		sleep 1
 	done
 	;;
-	
-b|balance)
-	$GRC_CMD getbalance
+
+i|init|start)
+	if ! pgrep "gridcoinresearchd" ; then
+		# Start Gridcoin client
+		if [ -f $GRC_DATADIR/gridcoinresearch.conf ] ; then
+			# .GridcoinResearch folder is correctly mounted
+			/usr/bin/gridcoinresearchd -daemon -server -shrinkdebugfile -upnp -blocknotify='exec /grcupdate.sh' \
+				&& echo "gridcoinresearchd initiated"
+		else
+			echo -e 'gridcoinresearch.conf NOT FOUND, aborting'
+		fi
+	else
+		# Gridcoin client already running; "do nothing".
+		# Uncomment below to specify what to do
+		#/usr/bin/gridcoinresearchd $@
+		echo -e 'gridcoinresearchd already running!'
+	fi
 	;;
 
-a|address)
-	$GRC_CMD listaddressgroupings
+k|kill)
+	killall gridcoinresearchd
+	echo Forcing gridcoinresearchd stop
+	ps -e | grep gridcoin
 	;;
+
+l|log)
+	clear
+	tail -f -n 80 $LOGFILE
+	clear
+	;;
+
+s|stop|exit)
+	$GRC_CMD stop
+	echo Stopping gridcoinresearchd
+	ps -e | grep gridcoin
+	;;
+
+v|check|status)
+	ps -e | grep gridcoin
+	;;
+
 
 *)
-	echo "gridcoinresearchd wrapper"
+	echo "gridcoinresearchd command wrapper"
 	echo "Usage: grc [options]"
 	echo ""
 	echo "options:"
-	echo -e "\tc\tCommand redirect: gridcoinresearchd (commands entered)"
-	echo -e "\tl\tLog view"
-	echo -e "\tcl\tLog clear and view"
-	echo -e "\tpc\tProcess Check"
-	echo -e "\tps\tProcess Stop(exit)"
-	echo -e "\tpk\tProcess Kill(force stop)"
-	echo -e "\th\tget Height(blockcount)"
-	echo -e "\tb\tget Balance"
 	echo -e "\ta\tget Addresses"
+	echo -e "\tb\tget Balance"
+	echo -e "\tc\tCommand redirect: gridcoinresearchd (commands entered)"
+	echo -e "\td\tLog clear and view"
+	echo -e "\th\tget Height(blockcount)"
+	echo -e "\ti\tDaemon start(init)"
+	echo -e "\tk\tDaemon Kill(force stop)"
+	echo -e "\tl\tLog view"
+	echo -e "\ts\tDaemon Stop(exit)"
+	echo -e "\tv\tDaemon Check"
 	echo ""
 	;;
 
