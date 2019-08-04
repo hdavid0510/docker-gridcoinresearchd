@@ -22,11 +22,12 @@ RUN		chmod 755 /usr/bin/b /usr/bin/grc /grcupdate.sh /entrypoint.sh \
 	&&	ln -s /etc/supervisor/supervisord.conf /etc/supervisord.conf \
 	&&	mkdir -p /root/.GridcoinResearch \
 	&&	mkdir -p /var/run/sshd \
-	&&	echo 'root:root' |chpasswd \
-	&&	sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config \
+	&&	sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config \
 	&&	sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config \
 	&&	mkdir -p /root/.ssh \
-	&&	touch /root/.ssh/authorized_keys
+	&&	chmod 700 /root/.ssh \
+	&&	touch /root/.ssh/authorized_keys \
+	&&	chmod 600 /root/.ssh/authorized_keys
 
 # Port expose
 EXPOSE 22/tcp
