@@ -1,4 +1,5 @@
 FROM ubuntu:18.04
+LABEL mainainer="gdavid0510@gmail.com"
 
 # Copy basic scripts and configs
 WORKDIR /root
@@ -42,4 +43,4 @@ ENV GRC_DATADIR /root/.GridcoinResearch
 ENV BOINC_DATADIR /var/lib/boinc
 
 # RUN
-ENTRYPOINT ["/usr/bin/supervisord"]
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
