@@ -107,16 +107,15 @@ k) # Kill daemon
 	;;
 
 i) # Start daemon
-	echo -e "\e[93m[BOINC]\e[92m Starting BOINC daemon\e[0m"
+	echo -e "\e[93m[BOINC]\e[92m Starting BOINC client\e[0m"
 	if ! pgrep "boinc" ; then
 		# Start BOINC daemon
 		boinc --allow_remote_gui_rpc --dir $BOINC_DATADIR && \
 			echo -e "\e[93m[BOINC]\e[92m Running BOINC\e[0m"
 	else
 		# BOINC daemon already running; "do nothing".
-		echo -e -e "\e[93m[BOINC]\e[92m daemon already running\e[0m"
+		echo -e -e "\e[93m[BOINC]\e[92m BOINC already running\e[0m"
 	fi
-	exit 0
 	;;
 
 p) # daemon check

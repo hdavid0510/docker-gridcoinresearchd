@@ -35,7 +35,8 @@ i|init|start)
 		# Start Gridcoin client
 		if [ -f $GRC_DATADIR/gridcoinresearch.conf ] ; then
 			# .GridcoinResearch folder is correctly mounted
-			/usr/bin/gridcoinresearchd -daemon -server -shrinkdebugfile -upnp -blocknotify='exec /grcupdate.sh' \
+			#/usr/bin/gridcoinresearchd -daemon -server -shrinkdebugfile -upnp -blocknotify='exec /grcupdate.sh' \
+			/usr/bin/gridcoinresearchd -server -shrinkdebugfile -upnp -blocknotify='exec /grcupdate.sh' \
 				&& echo "gridcoinresearchd initiated"
 		else
 			echo -e 'gridcoinresearch.conf NOT FOUND, aborting'
@@ -46,7 +47,6 @@ i|init|start)
 		#/usr/bin/gridcoinresearchd $@
 		echo -e 'gridcoinresearchd already running!'
 	fi
-	exit 0
 	;;
 
 k|kill)
