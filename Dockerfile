@@ -19,6 +19,7 @@ COPY files /
 
 # Adjust permissions on copied files
 RUN		chmod 755 /usr/bin/b /usr/bin/grc /grcupdate.sh /entrypoint.sh \
+	&&	ln -s /etc/supervisor/supervisord.conf /etc/supervisord.conf \
 	&&	mkdir -p /root/.GridcoinResearch \
 	&&	mkdir -p /var/run/sshd \
 	&&	echo 'root:root' |chpasswd \
