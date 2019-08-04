@@ -12,13 +12,11 @@ RUN		chmod 755 /usr/bin/b /usr/bin/grc /grcupdate.sh /entrypoint.sh \
 # Install required packages 
 RUN		apt-get update -qq \
 	&&	apt-get upgrade -y -qq \
-	&&	DEBIAN_FRONTEND=noninteractive \
-		apt-get install --no-install-recommends -y -qq \
+	&&	DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y -qq \
 			apt-utils bash-completion software-properties-common sudo \
 	&&	add-apt-repository -y ppa:gridcoin/gridcoin-stable \
 	&&	apt-get update -qq \
-	&&	apt-get install -y --option=Dpkg::Options::=--force-confdef \
-			supervisor
+	&&	apt-get install -y supervisor --option=Dpkg::Options::=--force-confdef \
 	&&	apt-get install --no-install-recommends -y -qq \
 			openssh-server vim nano gridcoinresearchd boinc boinc-client boinctui \
 	&&	apt-get clean -qq \
