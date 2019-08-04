@@ -6,7 +6,7 @@ WORKDIR /root
 COPY files /
 
 # Adjust permissions on copied files
-RUN		chmod 755 /usr/bin/b /usr/bin/grc /grcupdate.sh /init.sh \
+RUN		chmod 755 /usr/bin/b /usr/bin/grc /grcupdate.sh /entrypoint.sh \
 	&&	mkdir -p /root/.GridcoinResearch
 
 # Install required packages 
