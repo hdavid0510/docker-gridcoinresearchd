@@ -37,7 +37,7 @@ echo "[INIT]   SET:BOINC_PASSWD=$BOINC_PASSWD"
 
 echo "[INIT] Start supervisord daemon"
 if [ -z "$@" ]; then
-	exec /usr/local/bin/supervisord -c /etc/supervisor/supervisord.conf --nodaemon
+	exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf --nodaemon
 else
 	exec PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $@
 fi
