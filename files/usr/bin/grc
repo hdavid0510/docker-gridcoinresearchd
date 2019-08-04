@@ -46,6 +46,7 @@ i|init|start)
 		#/usr/bin/gridcoinresearchd $@
 		echo -e 'gridcoinresearchd already running!'
 	fi
+	exit 0
 	;;
 
 k|kill)
