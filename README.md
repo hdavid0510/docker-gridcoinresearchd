@@ -27,4 +27,5 @@ GridcoinResearch Daemon server on top of ubuntu docker
 |__*Required__|`BOINC_PASSWD`	|_Random_ [1]	|Password for BOINC client RPC GUI	|
 |_Optional_|`GRC_DATADIR`	|`/root/.GridcoinResearch`	|Full path of `.GridcoinResearch` __inside container__	|
 |_Optional_|`BOINC_DATADIR`|`/var/lib/boinc`	|Full path of BOINC data directory __inside container__	|
+
 [1] Random string with 32 HEX characters will be generated each time the container started.
