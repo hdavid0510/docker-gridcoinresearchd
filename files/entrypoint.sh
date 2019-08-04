@@ -1,9 +1,8 @@
 #!/bin/bash
 
-set -e
-
 # Verify Gridcoin Daemon configuration valid
 echo "[INIT] Gridcoin Daemon configuration check"
+
 if [[ -z $GRC_USERNAME ]] ; then
 	# Generate random HEX 32-char's long string as password
 	export GRC_USERNAME=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 )
@@ -36,6 +35,7 @@ fi
 
 # Update BOINC RPC passwd; generate one if not provided
 echo "[INIT] Update BOINC RPC password"
+
 if [[ -z $BOINC_PASSWD ]] ; then
 	# Generate random HEX 32-char's long string as password
 	unset BOINC_PASSWD
@@ -48,8 +48,10 @@ echo "[INIT]   BOINC_PASSWD=$BOINC_PASSWD"
 echo "[INIT] Init completed"
 if [ -z "$@" ]; then
 	# If parameter is not given, init supervisord as default
+	echo "[INIT] Start supervisord"
 	exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 else
 	# Otherwise, execute parameter given.
+	echo "[INIT] Start commands passed by parameter: $@"
 	exec $@
 fi
