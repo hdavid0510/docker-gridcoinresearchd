@@ -60,7 +60,7 @@ if [[ -z $BOINC_PASSWD ]] ; then
 	unset BOINC_PASSWD
 	export BOINC_PASSWD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 )
 fi
-echo $BOINC_PASSWD > $BOINC_DATADIR/gui_prc_auth.cfg
+echo $BOINC_PASSWD > $BOINC_DATADIR/gui_rpc_auth.cfg
 echo "[INIT]   BOINC_PASSWD=$BOINC_PASSWD"
 
 echo "[INIT] Init completed"
