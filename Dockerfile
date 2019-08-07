@@ -9,7 +9,7 @@ RUN		apt-get update -qq \
 	&&	add-apt-repository -y ppa:gridcoin/gridcoin-stable \
 	&&	apt-get update -qq \
 	&&	apt-get install --no-install-recommends -y -qq \
-			supervisor openssh-server vim nano gridcoinresearchd boinc boinc-client boinctui \
+			supervisor openssh-server vim nano gridcoinresearchd boinc boinc-client boinctui wget curl byobu dialog \
 	&&	apt-get clean -qq \
 	&&	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 	
@@ -27,7 +27,8 @@ RUN		chmod 755 /usr/bin/b /usr/bin/grc /grcupdate.sh /entrypoint.sh \
 	&&	mkdir -p /root/.ssh \
 	&&	chmod 700 /root/.ssh \
 	&&	touch /root/.ssh/authorized_keys \
-	&&	chmod 600 /root/.ssh/authorized_keys
+	&&	chmod 600 /root/.ssh/authorized_keys \
+	&&	byobu-enable
 
 # Port expose
 EXPOSE 22/tcp
