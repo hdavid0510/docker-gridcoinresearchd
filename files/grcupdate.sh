@@ -5,7 +5,7 @@ if [ -z $1 ] || [ -z $2 ] ; then
 	exit 1;
 fi
 
-printf '<html style="font-family:consolas;color:white">KST%s<br/>H %s<br/>B %s</html>' \
+printf '<html style="font-family:consolas;color:white">UTC%s<br/>H %s<br/>B %s</html>' \
 	$(date +"%Y%m%d.%H:%M:%S") \
 	"$(gridcoinresearchd -rpcuser=$1 -rpcpassword=$2 getblockcount 2>&1)" \
 	"$(gridcoinresearchd -rpcuser=$1 -rpcpassword=$2 getbalance 2>&1)" > /blocks.html
