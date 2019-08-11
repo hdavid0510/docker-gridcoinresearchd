@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z $1 ] || [ -z $2 ] ; then
-	echo -e "\e[93m[GRCUPDATE] \e[92mInvalid parameter. (rpcuser=$1 rpcpassword=$2)"
+	echo -e "\e[93m[GRCUPDATE] \e[92mInvalid parameter. (rpcuser=$1 rpcpassword=$2)\e[0m"
 	exit 1;
 fi
 
