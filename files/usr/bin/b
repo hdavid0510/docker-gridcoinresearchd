@@ -14,7 +14,7 @@ list_task(){
 case $1 in
 
 s) # Suspend all tasks
-	echo -e "\e[93m[BOINC]\e[92m Suspending every tasks\e[0m"
+	echo -e "\e[93m[BOINC]\e[92ms Suspending every tasks\e[0m"
 	$BOINCCMD --get_tasks \
 	|sed -r -e '/^   (name|project URL)/!d' -e 's/   name: //g' \
 	|sed -r -e ':a;N;$!ba;s/\n^   project URL://g' \
@@ -33,7 +33,7 @@ s) # Suspend all tasks
 	;;
 	
 sp) # Suspend all Projects
-	echo -e "\e[93m[BOINC]\e[92m Suspending every projects\e[0m"
+	echo -e "\e[93m[BOINC]\e[92msp Suspending every projects\e[0m"
 	for url in $($BOINCCMD --get_project_status | sed -n 's/\s*master URL: //p'); do
 		$BOINCCMD --project ${url} "suspend"
 		echo "Suspending project : ${url}"
@@ -42,7 +42,7 @@ sp) # Suspend all Projects
 	;;
 	
 r) # Resume all tasks
-	echo -e "\e[93m[BOINC]\e[92m Resuming every tasks\e[0m"
+	echo -e "\e[93m[BOINC]\e[92mr Resuming every tasks\e[0m"
 	$BOINCCMD --get_tasks \
 	|sed -r -e '/^   (name|project URL)/!d' -e 's/   name: //g' \
 	|sed -r -e ':a;N;$!ba;s/\n^   project URL://g' \
@@ -61,7 +61,7 @@ r) # Resume all tasks
 	;;
 	
 rp) # Resume all Projects
-	echo -e "\e[93m[BOINC]\e[92m Resuming every projects\e[0m"
+	echo -e "\e[93m[BOINC]\e[92mrp Resuming every projects\e[0m"
 	for url in $($BOINCCMD --get_project_status | sed -n 's/\s*master URL: //p'); do
 		$BOINCCMD --project ${url} resume
 		echo "Resuming project : ${url}"
@@ -70,7 +70,7 @@ rp) # Resume all Projects
 	;;
 	
 a) # Abort all
-	echo -e "\e[93m[BOINC]\e[92m Aborting every tasks\e[0m"
+	echo -e "\e[93m[BOINC]\e[92ma Aborting every tasks\e[0m"
 	$BOINCCMD --get_tasks \
 	|sed -r -e '/^   (name|project URL)/!d' -e 's/   name: //g' \
 	|sed -r -e ':a;N;$!ba;s/\n^   project URL://g' \
@@ -89,14 +89,14 @@ a) # Abort all
 	;;
 	
 u) # Update all project and sync
-	echo -e "\e[93m[BOINC]\e[92m Updating every projects and syncing to account manager\e[0m"
+	echo -e "\e[93m[BOINC]\e[92mu Updating every projects and syncing to account manager\e[0m"
 	for url in $($BOINCCMD --get_project_status | sed -n 's/\s*master URL: //p'); do
 		$BOINCCMD --project ${url} update
 		echo "Updating project : ${url}"
 	done
-	echo -e "\e[93m[BOINC]\e[92m Syncing account manager...\e[0m"
+	echo -e "\e[93m[BOINC]\e[92mu Syncing account manager...\e[0m"
 	$BOINCCMD --acct_mgr sync
-	echo -e "\e[93m[BOINC]\e[92m BOINC projects and account manager sync completed\e[0m"
+	echo -e "\e[93m[BOINC]\e[92mu BOINC projects and account manager sync completed\e[0m"
 	$BOINCCMD --acct_mgr info
 	sleep 2
 	list_task
@@ -107,18 +107,18 @@ k) # Kill daemon
 	;;
 
 i) # Start daemon
-	echo -e "\e[93m[BOINC]\e[92m Starting BOINC client\e[0m"
-	if ! pgrep "boinc"; then
-		# Start BOINC daemon
-		boinc --allow_remote_gui_rpc --dir $BOINC_DATADIR && \
-			echo -e "\e[93m[BOINC]\e[92m Running BOINC\e[0m"
-	else
-		# BOINC daemon already running; "do nothing".
-		echo -e "\e[93m[BOINC]\e[92m BOINC already running\e[0m"
+	if pgrep boinc; then
+		echo -e "\e[93m[BOINC]\e[92mi [ABORT: 1] BOINC already running\e[0m"
+		exit 1
 	fi
+	echo -e "\e[93m[BOINC]\e[92mi Starting BOINC client\e[0m"
+	mkdir -p /dev/input/mice
+	boinc --allow_remote_gui_rpc --dir $BOINC_DATADIR
+	exit 0
 	;;
 
 p) # daemon check
+	echo -e "\e[93m[BOINC]\e[92mp Running BOINC process:\e[0m"
 	ps -e | grep boinc
 	;;
 	
@@ -127,10 +127,12 @@ c) # Command direct input
 	;;
 	
 d) # Show status
+	echo -e "\e[93m[BOINC]\e[92md BOINC status:\e[0m"
 	$BOINCCMD --get_state | more
 	;;
 	
 m) # Messages
+	echo -e "\e[93m[BOINC]\e[92mm BOINC messages:\e[0m"
 	$BOINCCMD --get_messages
 	;;
 	
@@ -140,7 +142,7 @@ w) # Watch tasks
 	;;
 	
 *)
-	echo "boinccmd wrapper"
+	echo "[BOINC] boinccmd wrapper"
 	echo "Usage: bt [options]"
 	echo ""
 	echo "options:"
