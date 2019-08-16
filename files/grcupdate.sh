@@ -1,12 +1,22 @@
 #!/bin/bash
 
-if [ -z $1 ] || [ -z $2 ] ; then
-	echo -e "\e[93m[GRCUPDATE] \e[92mInvalid parameter. (rpcuser=$1 rpcpassword=$2)\e[0m"
-	exit 1;
-fi
+DEFAULT_GRC_USERNAME=''
+DEFAULT_GRC_PASSWD=''
+TIMEZONE=''
 
-printf '<html style="font-family:consolas;color:white">UTC%s<br/>H %s<br/>B %s</html>' \
-	$(date +"%Y%m%d.%H:%M:%S") \
-	"$(gridcoinresearchd -rpcuser=$1 -rpcpassword=$2 getblockcount 2>&1)" \
-	"$(gridcoinresearchd -rpcuser=$1 -rpcpassword=$2 getbalance 2>&1)" > /blocks.html
-exit 0;
+#Credentials validity check
+# 1) environment variable
+# 2) parameter
+# 3) default credendials given above 
+if [ -z $GRC_USERNAME ] || [ -z $GRC_PASSWD ] ; then
+	if [ -z $1 ] || [ -z $2 ] ; then
+		GRC_USERNAME=$DEFAULT_GRC_USERNAME ;
+		GRC_PASSWD=$DEFAULT_GRC_PASSWD ;
+	else
+		GRC_USERNAME=$1 ;
+		GRC_PASSWD=$2 ;
+	fi
+fi
+GRC="gridcoinresearchd -rpcuser=$GRC_USERNAME -rpcpassword=$GRC_PASSWD"
+
+echo \<html style="font-family:consolas;color:white"\> $(TZ=$TIMEZONE date +'%Y%m%d %T %Z(%:z)')\<br \/\>H "$($GRC getblockcount 2>&1)"\<br \/\>B "$($GRC getbalance 2>&1)"\<\/html\> | tee /blocks.html
