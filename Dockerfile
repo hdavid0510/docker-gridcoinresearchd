@@ -43,7 +43,7 @@ EXPOSE 32750/tcp
 # Default environent variable values
 ENV GRC_DATADIR /root/.GridcoinResearch
 ENV BOINC_DATADIR /var/lib/boinc
-RUN echo -e "\n. /etc/environment_creds" >> /root/.profile
+RUN echo ". /etc/environment_creds" >> /root/.profile
 
 # RUN
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
