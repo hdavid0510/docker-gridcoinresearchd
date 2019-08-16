@@ -47,6 +47,10 @@ fi
 # Verify BOINC client configuration valid
 echo "[INIT] BOINC configuration check"
 
+# Generate random HEX 32-char's long string as password
+echo "[INIT]   BOINC /dev/input/mice error workaround"
+mkdir -p /dev/input/mice
+
 if [[ -z $BOINC_DATADIR ]] ; then
 	echo "[INIT]   BOINC_DATADIR unspecified; using default"
 	unset BOINC_DATADIR
