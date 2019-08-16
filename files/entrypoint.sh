@@ -67,7 +67,7 @@ echo "[INIT] Init completed"
 if [ -z "$@" ]; then
 	# If parameter is not given, init supervisord as default
 	echo "[INIT] Start supervisord"
-	TARGET=/etc/cred
+	TARGET=/etc/environment_creds
 	echo "export BOINC_PASSWD=$BOINC_PASSWD" > $TARGET
 	echo "export BOINC_DATADIR=$BOINC_DATADIR" >> $TARGET
 	echo "export GRC_USERNAME=$GRC_USERNAME" >> $TARGET
