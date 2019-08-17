@@ -1,71 +1,123 @@
 #!/bin/bash
 
-GRC_CMD="/usr/bin/gridcoinresearchd -rpcuser=$GRC_USERNAME -rpcpassword=$GRC_PASSWD"
+if [ ! -z GRC_USERNAME ]; then
+	USERNAME="-rpcuser=$GRC_USERNAME"
+fi
+if [ ! -z GRC_PASSWD ]; then
+	PASSWORD="-rpcpassword=$GRC_PASSWD"
+fi
+GRC_CMD="/usr/bin/gridcoinresearchd $USERNAME $PASSWD"
+
 LOGFILE="$GRC_DATADIR/debug.log"
 
 case $1 in
 
-c|cmd)
-	$GRC_CMD "${@:2}"
+# GRC commands
+ga|address)
+	$GRC_CMD listaddressgroupings
+	;;
+	
+gb|balance)
+	$GRC_CMD getbalance
 	;;
 
-l)
-	clear
-	tail -f -n 80 $LOGFILE
-	clear
-	;;
-
-cl)
-	clear
-	echo "" > $LOGFILE
-	clear
-	;;
-
-pc|p)
-	ps -e | grep gridcoin
-	;;
-
-ps|k)
-	$GRC_CMD stop
-	echo Stopping gridcoinresearchd
-	ps -e | grep gridcoin
-	;;
-
-pk|kx)
-	killall gridcoinresearchd
-	echo Forcing gridcoinresearchd stop
-	ps -e | grep gridcoin
-	;;
-
-h|height)
+gh|height)
 	while true ; do
 		$GRC_CMD getblockcount
 		sleep 1
 	done
 	;;
-	
-b|balance)
-	$GRC_CMD getbalance
+
+# Logs
+l|lv|log)
+	clear
+	echo -e "\e[93m[GRC]\e\[92m$1 gridcoinresearchd debug log\e[0m"
+	tail -f -n 80 $LOGFILE
+	clear
+	;;
+lc|clear|delete)
+	echo "" > $LOGFILE
+	echo -e "\e[93m[GRC]\e\[92m$1 gridcoinresearchd debug log cleared\e[0m"
 	;;
 
-a|address)
-	$GRC_CMD listaddressgroupings
+# Process manage
+c|cmd)
+	$GRC_CMD "${@:2}"
+	;;
+i|init|start)
+	# Abort when GRC client currently running
+	if pgrep gridcoinres ; then
+		echo -e "\e[93m[GRC]\e\[92m$1 \e[91m[ABORT: 1]\e[92m gridcoinresearchd already running\e[0m"
+		exit 1
+	fi
+
+	# Abort when .GridcoinResearch folder is not correctly mounted
+	if [ ! -f $GRC_DATADIR/gridcoinresearch.conf ] ; then
+		echo -e "\e[93m[GRC]\e\[92m$1 \e[91m[ABORT: 2]\e[92m gridcoinresearch.conf NOT FOUND\e[0m"
+		exit 2
+	fi
+
+	# Wipe $GRC_DATADIR/debug.log
+	echo -e "\e[93m[GRC]\e\[92m$1 Wiping gridcoinresearchd log\e[0m"
+	if [ -f $GRC_DATADIR/debug.log ] ; then
+		rm -r $GRC_DATADIR/debug.log
+	fi
+	touch $GRC_DATADIR/debug.log
+
+	# .GridcoinResearch folder is correctly mounted
+	#/usr/bin/gridcoinresearchd -daemon -server -shrinkdebugfile -upnp -blocknotify='exec /grcupdate.sh' \
+
+	# Check credential validity and start process
+	echo -e "\e[93m[GRC]\e\[92m$1 checking credentials\e[0m"
+	if [ -z $2 ] || [ -z $3 ] ; then
+		if [ -z $GRC_USERNAME ] || [ -z $GRC_PASSWD ] ; then
+			echo -e "\e[93m[GRC]\e\[92m$1 Credential not set ENV\e[0m"
+			echo -e "\e[93m[GRC]\e\[92m$1 \e[91m[ABORT: 3]\e[92m Credential not given\e[0m"
+			exit 3
+		else
+			echo -e "\e[93m[GRC]\e\[92m$1 Credential using ENV: USERNAME=$GRC_USERNAME PASSWD=$GRC_PASSWD\e[0m"
+		fi
+	else
+		echo -e "\e[93m[GRC]\e\[92m$1 Credential explicitly given: USERNAME=$2 PASSWD=$3\e[0m"
+		GRC_USERNAME=$2
+		GRC_PASSWD=$3
+	fi
+	echo -e "\e[93m[GRC]\e\[92m$1 executing gridcoinresearchd with OPT: $GRC_RUNOPT\e[0m"
+	/usr/bin/gridcoinresearchd -server -upnp -blocknotify="/grcupdate.sh $GRC_USERNAME $GRC_PASSWD"
+	exit 0
+	;;
+s|stop|exit)
+	$GRC_CMD stop
+	echo -e "\e[93m[GRC]\e\[92m$1 Stopping gridcoinresearchd\e[0m"
+	ps -e | grep gridcoin
+	;;
+k|kill)
+	echo -e "\e[93m[GRC]\e\[92m$1 Force stop gridcoinresearchd\e[0m"
+	pkill gridcoinresearchd
+	ps -e | grep gridcoin
+	;;
+v|check|status)
+	echo -e "\e[93m[GRC]\e\[92m$1 Running gridcoinresearchd process:\e[0m"
+	ps -e | grep gridcoin
+	echo ''
 	;;
 
+# Help
 *)
-	echo "gridcoinresearchd wrapper"
+	echo -e "\e[93m[GRC]\e\[92m$1gridcoinresearchd command wrapper\e[0m"
 	echo "Usage: grc [options]"
 	echo ""
 	echo "options:"
-	echo -e "\tc\tCommand redirect: gridcoinresearchd (commands entered)"
-	echo -e "\tl\tLog view"
-	echo -e "\tcl\tLog clear and view"
-	echo -e "\tpc\tProcess Check"
-	echo -e "\tps\tProcess Stop(exit)"
-	echo -e "\tpk\tProcess Kill(force stop)"
-	echo -e "\th\tget Height(blockcount)"
-	echo -e "\tb\tget Balance"
-	echo -e "\ta\tget Addresses"
+	echo -e "\tc\tdirect Command to gridcoinresearchd\e[0m"
+	echo -e "\tga\tGet Addresses\e[0m"
+	echo -e "\tgb\tGet Balance\e[0m"
+	echo -e "\tgh\tGet Height(blockcount)\e[0m"
+	echo -e "\tl\tLog read\e[0m"
+	echo -e "\tlc\tLog Clear\e[0m"
+	echo -e "\ti\tdaemon Init(start)\e[0m"
+	echo -e "\tv\tdaemon check status\e[0m"
+	echo -e "\ts\tdaemon Stop(exit)\e[0m"
+	echo -e "\tk\tdaemon Kill(force stop)\e[0m"
 	echo ""
 	;;
 
