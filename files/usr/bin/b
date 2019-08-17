@@ -13,8 +13,21 @@ list_task(){
 
 case $1 in
 
-s) # Suspend all tasks
-	echo -e "\e[93m[BOINC]\e[92ms Suspending every tasks\e[0m"
+#Project/Tasks
+gs) # Show status
+	echo -e "\e[93m[BOINC]\e[92md BOINC status:\e[0m"
+	$BOINCCMD --get_state | more
+	;;
+gm) # Messages
+	echo -e "\e[93m[BOINC]\e[92mm BOINC messages:\e[0m"
+	$BOINCCMD --get_messages
+	;;
+w) # Watch tasks
+	watch -n 1 "$BOINCCMD --get_tasks | sed -r -e '/^   (name|project URL|active_task_state)/!d' -e 's/   name: //g' -e 's/   project URL: /\t/g' -e 's/   active_task_state: /\t/g'"
+	exit
+	;;
+p) # Suspend all tasks
+	echo -e "\e[93m[BOINC]\e[92ms Pausing(suspending) every tasks\e[0m"
 	$BOINCCMD --get_tasks \
 	|sed -r -e '/^   (name|project URL)/!d' -e 's/   name: //g' \
 	|sed -r -e ':a;N;$!ba;s/\n^   project URL://g' \
@@ -31,16 +44,14 @@ s) # Suspend all tasks
 	sleep 3;
 	list_task
 	;;
-	
-sp) # Suspend all Projects
-	echo -e "\e[93m[BOINC]\e[92msp Suspending every projects\e[0m"
+pp) # Suspend all Projects
+	echo -e "\e[93m[BOINC]\e[92msp Pausing(suspending) every projects\e[0m"
 	for url in $($BOINCCMD --get_project_status | sed -n 's/\s*master URL: //p'); do
 		$BOINCCMD --project ${url} "suspend"
 		echo "Suspending project : ${url}"
 	done
 	list_task
 	;;
-	
 r) # Resume all tasks
 	echo -e "\e[93m[BOINC]\e[92mr Resuming every tasks\e[0m"
 	$BOINCCMD --get_tasks \
@@ -59,7 +70,6 @@ r) # Resume all tasks
 	sleep 3;
 	list_task
 	;;
-	
 rp) # Resume all Projects
 	echo -e "\e[93m[BOINC]\e[92mrp Resuming every projects\e[0m"
 	for url in $($BOINCCMD --get_project_status | sed -n 's/\s*master URL: //p'); do
@@ -68,7 +78,6 @@ rp) # Resume all Projects
 	done
 	list_task
 	;;
-	
 a) # Abort all
 	echo -e "\e[93m[BOINC]\e[92ma Aborting every tasks\e[0m"
 	$BOINCCMD --get_tasks \
@@ -87,7 +96,6 @@ a) # Abort all
 	sleep 3;
 	list_task
 	;;
-	
 u) # Update all project and sync
 	echo -e "\e[93m[BOINC]\e[92mu Updating every projects and syncing to account manager\e[0m"
 	for url in $($BOINCCMD --get_project_status | sed -n 's/\s*master URL: //p'); do
@@ -101,14 +109,14 @@ u) # Update all project and sync
 	sleep 2
 	list_task
 	;;
-	
-k) # Kill daemon
-	killall boinc
-	;;
 
+# Process manage
+c) # Command direct input
+	$BOINCCMD ${@:2}
+	;;
 i) # Start daemon
 	if pgrep boinc; then
-		echo -e "\e[93m[BOINC]\e[92mi [ABORT: 1] BOINC already running\e[0m"
+		echo -e "\e[93m[BOINC]\e[92mi \e[91m[ABORT: 1]\e[92m BOINC already running\e[0m"
 		exit 1
 	fi
 	echo -e "\e[93m[BOINC]\e[92mi Starting BOINC client\e[0m"
@@ -116,48 +124,34 @@ i) # Start daemon
 	boinc --allow_remote_gui_rpc --dir $BOINC_DATADIR
 	exit 0
 	;;
-
-p) # daemon check
+v) # daemon check
 	echo -e "\e[93m[BOINC]\e[92mp Running BOINC process:\e[0m"
 	ps -e | grep boinc
 	;;
-	
-c) # Command direct input
-	$BOINCCMD $@
+k) # Kill daemon
+	pkill boinc
+	ps -e | grep boinc
 	;;
-	
-d) # Show status
-	echo -e "\e[93m[BOINC]\e[92md BOINC status:\e[0m"
-	$BOINCCMD --get_state | more
-	;;
-	
-m) # Messages
-	echo -e "\e[93m[BOINC]\e[92mm BOINC messages:\e[0m"
-	$BOINCCMD --get_messages
-	;;
-	
-w) # Watch tasks
-	watch -n 1 "$BOINCCMD --get_tasks | sed -r -e '/^   (name|project URL|active_task_state)/!d' -e 's/   name: //g' -e 's/   project URL: /\t/g' -e 's/   active_task_state: /\t/g'"
-	exit
-	;;
-	
+
+# Help
 *)
 	echo "[BOINC] boinccmd wrapper"
 	echo "Usage: bt [options]"
 	echo ""
 	echo "options:"
-	echo -e "\ts\tSuspend all tasks (can fetch new tasks)"
-	echo -e "\tsp\tSuspend projects"
+	echo -e "\tc\tDirect command to boinccmd"
+	echo -e "\tgs\tGet detailed status"
+	echo -e "\tgm\tGet Messages"
+	echo -e "\tw\tWatch tasks"
+	echo -e "\tp\tPause(suspend) all tasks (can fetch new tasks)"
+	echo -e "\tpp\tPause(suspend) projects"
 	echo -e "\tr\tResume all tasks"
 	echo -e "\trp\tResume projects"
 	echo -e "\ta\tAbort all tasks"
 	echo -e "\tu\tUpdate(Sync) projects and manager"
-	echo -e "\tc\tDirect command to boinccmd"
-	echo -e "\td\tDetailed messages"
 	echo -e "\ti\tStart(init) BOINC daemon"
+	echo -e "\tv\tCheck BOINC daemon running"
 	echo -e "\tk\tKill BOINC daemon"
-	echo -e "\tp\tCheck BOINC daemon running"
-	echo -e "\tw\tWatch tasks"
 	;;
 	
 esac

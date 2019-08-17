@@ -12,45 +12,53 @@ LOGFILE="$GRC_DATADIR/debug.log"
 
 case $1 in
 
-a|address)
+# GRC commands
+ga|address)
 	$GRC_CMD listaddressgroupings
 	;;
 	
-b|balance)
+gb|balance)
 	$GRC_CMD getbalance
 	;;
 
-c|cmd)
-	$GRC_CMD "${@:2}"
-	;;
-
-d|clear|delete)
-	echo "" > $LOGFILE
-	echo '[GRC]d gridcoinresearchd debug log cleared'
-	;;
-
-h|height)
+gh|height)
 	while true ; do
 		$GRC_CMD getblockcount
 		sleep 1
 	done
 	;;
 
+# Logs
+l|lv|log)
+	clear
+	echo -e "\e[93m[GRC]\e\[92m$1 gridcoinresearchd debug log\e[0m"
+	tail -f -n 80 $LOGFILE
+	clear
+	;;
+lc|clear|delete)
+	echo "" > $LOGFILE
+	echo -e "\e[93m[GRC]\e\[92m$1 gridcoinresearchd debug log cleared\e[0m"
+	;;
+
+# Process manage
+c|cmd)
+	$GRC_CMD "${@:2}"
+	;;
 i|init|start)
 	# Abort when GRC client currently running
 	if pgrep gridcoinres ; then
-		echo -e '[GRC]i [ABORT: 1] gridcoinresearchd already running'
+		echo -e "\e[93m[GRC]\e\[92m$1 \e[91m[ABORT: 1]\e[92m gridcoinresearchd already running\e[0m"
 		exit 1
 	fi
 
 	# Abort when .GridcoinResearch folder is not correctly mounted
 	if [ ! -f $GRC_DATADIR/gridcoinresearch.conf ] ; then
-		echo -e '[GRC]i [ABORT: 2] gridcoinresearch.conf NOT FOUND'
+		echo -e "\e[93m[GRC]\e\[92m$1 \e[91m[ABORT: 2]\e[92m gridcoinresearch.conf NOT FOUND\e[0m"
 		exit 2
 	fi
 
 	# Wipe $GRC_DATADIR/debug.log
-	echo "[GRC]i Wiping gridcoinresearchd log"
+	echo -e "\e[93m[GRC]\e\[92m$1 Wiping gridcoinresearchd log\e[0m"
 	if [ -f $GRC_DATADIR/debug.log ] ; then
 		rm -r $GRC_DATADIR/debug.log
 	fi
@@ -60,67 +68,57 @@ i|init|start)
 	#/usr/bin/gridcoinresearchd -daemon -server -shrinkdebugfile -upnp -blocknotify='exec /grcupdate.sh' \
 
 	# Check credential validity and start process
-	echo "[GRC]i checking credentials"
+	echo -e "\e[93m[GRC]\e\[92m$1 checking credentials\e[0m"
 	GRC_RUNOPT="-server -upnp"
 	if [ -z $2 ] || [ -z $3 ] ; then
 		if [ -z $GRC_USERNAME ] || [ -z $GRC_PASSWD ] ; then
-			echo "[GRC]i Credential not set ENV"
-			echo "[GRC]i [ABORT: 3] Credential not given"
+			echo -e "\e[93m[GRC]\e\[92m$1 Credential not set ENV\e[0m"
+			echo -e "\e[93m[GRC]\e\[92m$1 \e[91m[ABORT: 3]\e[92m Credential not given\e[0m"
 			exit 3
 		else
-			echo "[GRC]i Credential not explicitly given; using ENV; USERNAME=$GRC_USERNAME PASSWD=$GRC_PASSWD"
+			echo -e "\e[93m[GRC]\e\[92m$1 Credential not explicitly given; using ENV; USERNAME=$GRC_USERNAME PASSWD=$GRC_PASSWD\e[0m"
 			GRC_RUNOPT=$GRC_RUNOPT -blocknotify=\"/grcupdate.sh $GRC_USERNAME $GRC_PASSWD\"
 		fi
 	else
-		echo "[GRC]i Credential given; USERNAME=$2 PASSWD=$3"
+		echo -e "\e[93m[GRC]\e\[92m$1 Credential given; USERNAME=$2 PASSWD=$3\e[0m"
 		GRC_RUNOPT=$GRC_RUNOPT -blocknotify=\"/grcupdate.sh $2 $3\"
 	fi
-	echo "[GRC]i executing gridcoinresearchd with OPT: $GRC_RUNOPT"
+	echo -e "\e[93m[GRC]\e\[92m$1 executing gridcoinresearchd with OPT: $GRC_RUNOPT\e[0m"
 	/usr/bin/gridcoinresearchd $GRC_RUNOPT
 	exit 0
 	;;
-
+s|stop|exit)
+	$GRC_CMD stop
+	echo -e "\e[93m[GRC]\e\[92m$1 Stopping gridcoinresearchd\e[0m"
+	ps -e | grep gridcoin
+	;;
 k|kill)
-	echo "[GRC]k Force stop gridcoinresearchd"
+	echo -e "\e[93m[GRC]\e\[92m$1 Force stop gridcoinresearchd\e[0m"
 	pkill gridcoinresearchd
 	ps -e | grep gridcoin
 	;;
-
-l|log)
-	clear
-	echo "[GRC]l gridcoinresearchd debug log"
-	tail -f -n 80 $LOGFILE
-	clear
-	;;
-
-s|stop|exit)
-	$GRC_CMD stop
-	echo "[GRC]s Stopping gridcoinresearchd"
-	ps -e | grep gridcoin
-	;;
-
 v|check|status)
-	echo "[GRC]v Running gridcoinresearchd process:"
+	echo -e "\e[93m[GRC]\e\[92m$1 Running gridcoinresearchd process:\e[0m"
 	ps -e | grep gridcoin
 	echo ''
 	;;
 
-
+# Help
 *)
-	echo "[GRC] gridcoinresearchd command wrapper"
+	echo -e "\e[93m[GRC]\e\[92m$1gridcoinresearchd command wrapper\e[0m"
 	echo "Usage: grc [options]"
 	echo ""
 	echo "options:"
-	echo -e "\ta\tget Addresses"
-	echo -e "\tb\tget Balance"
-	echo -e "\tc\tCommand redirect: gridcoinresearchd (commands entered)"
-	echo -e "\td\tLog clear and view"
-	echo -e "\th\tget Height(blockcount)"
-	echo -e "\ti\tDaemon start(init)"
-	echo -e "\tk\tDaemon Kill(force stop)"
-	echo -e "\tl\tLog view"
-	echo -e "\ts\tDaemon Stop(exit)"
-	echo -e "\tv\tDaemon Check"
+	echo -e "\tc\tdirect Command to gridcoinresearchd\e[0m"
+	echo -e "\tga\tGet Addresses\e[0m"
+	echo -e "\tgb\tGet Balance\e[0m"
+	echo -e "\tgh\tGet Height(blockcount)\e[0m"
+	echo -e "\tl\tLog read\e[0m"
+	echo -e "\tlc\tLog Clear\e[0m"
+	echo -e "\ti\tdaemon Init(start)\e[0m"
+	echo -e "\tv\tdaemon check status\e[0m"
+	echo -e "\ts\tdaemon Stop(exit)\e[0m"
+	echo -e "\tk\tdaemon Kill(force stop)\e[0m"
 	echo ""
 	;;
 
