@@ -69,22 +69,21 @@ i|init|start)
 
 	# Check credential validity and start process
 	echo -e "\e[93m[GRC]\e\[92m$1 checking credentials\e[0m"
-	GRC_RUNOPT="-server -upnp"
 	if [ -z $2 ] || [ -z $3 ] ; then
 		if [ -z $GRC_USERNAME ] || [ -z $GRC_PASSWD ] ; then
 			echo -e "\e[93m[GRC]\e\[92m$1 Credential not set ENV\e[0m"
 			echo -e "\e[93m[GRC]\e\[92m$1 \e[91m[ABORT: 3]\e[92m Credential not given\e[0m"
 			exit 3
 		else
-			echo -e "\e[93m[GRC]\e\[92m$1 Credential not explicitly given; using ENV; USERNAME=$GRC_USERNAME PASSWD=$GRC_PASSWD\e[0m"
-			GRC_RUNOPT=$GRC_RUNOPT -blocknotify=\"/grcupdate.sh $GRC_USERNAME $GRC_PASSWD\"
+			echo -e "\e[93m[GRC]\e\[92m$1 Credential using ENV: USERNAME=$GRC_USERNAME PASSWD=$GRC_PASSWD\e[0m"
 		fi
 	else
-		echo -e "\e[93m[GRC]\e\[92m$1 Credential given; USERNAME=$2 PASSWD=$3\e[0m"
-		GRC_RUNOPT=$GRC_RUNOPT\ -blocknotify=\"/grcupdate.sh\ $2\ $3\"
+		echo -e "\e[93m[GRC]\e\[92m$1 Credential explicitly given: USERNAME=$2 PASSWD=$3\e[0m"
+		GRC_USERNAME=$2
+		GRC_PASSWD=$3
 	fi
 	echo -e "\e[93m[GRC]\e\[92m$1 executing gridcoinresearchd with OPT: $GRC_RUNOPT\e[0m"
-	/usr/bin/gridcoinresearchd $GRC_RUNOPT
+	/usr/bin/gridcoinresearchd -server -upnp -blocknotify="/grcupdate.sh $GRC_USERNAME $GRC_PASSWD"
 	exit 0
 	;;
 s|stop|exit)
