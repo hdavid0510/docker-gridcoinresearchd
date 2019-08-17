@@ -2,7 +2,6 @@
 
 DEFAULT_GRC_USERNAME=''
 DEFAULT_GRC_PASSWD=''
-TIMEZONE=''
 
 #Credentials validity check
 # 1) environment variable
@@ -19,4 +18,4 @@ if [ -z $GRC_USERNAME ] || [ -z $GRC_PASSWD ] ; then
 fi
 GRC="gridcoinresearchd -rpcuser=$GRC_USERNAME -rpcpassword=$GRC_PASSWD"
 
-echo \<html style="font-family:consolas;color:white"\> $(TZ=$TIMEZONE date +'%Y%m%d %T %Z(%:z)')\<br \/\>H "$($GRC getblockcount 2>&1)"\<br \/\>B "$($GRC getbalance 2>&1)"\<\/html\> | tee /blocks.html
+echo \<html style="font-family:consolas;color:white"\> $(date +'%Y%m%d %T %Z(%:z)')\<br \/\>H "$($GRC getblockcount 2>&1)"\<br \/\>B "$($GRC getbalance 2>&1)"\<\/html\> | tee /blocks.html
