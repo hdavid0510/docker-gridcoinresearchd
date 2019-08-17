@@ -81,7 +81,7 @@ i|init|start)
 		fi
 	else
 		echo -e "\e[93m[GRC]\e\[92m$1 Credential given; USERNAME=$2 PASSWD=$3\e[0m"
-		GRC_RUNOPT=$GRC_RUNOPT -blocknotify=\"/grcupdate.sh $2 $3\"
+		GRC_RUNOPT=$GRC_RUNOPT\ -blocknotify=\"/grcupdate.sh\ $2\ $3\"
 	fi
 	echo -e "\e[93m[GRC]\e\[92m$1 executing gridcoinresearchd with OPT: $GRC_RUNOPT\e[0m"
 	/usr/bin/gridcoinresearchd $GRC_RUNOPT
