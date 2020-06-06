@@ -1,7 +1,9 @@
 # gridcoinresearch-client-daemon
-[![](https://images.microbadger.com/badges/version/hdavid0510/gridcoinresearch-client-daemon:latest.svg)](https://microbadger.com/images/hdavid0510/gridcoinresearch-client-daemon:latest)
-[![](https://images.microbadger.com/badges/image/hdavid0510/gridcoinresearch-client-daemon:latest.svg)](https://microbadger.com/images/hdavid0510/gridcoinresearch-client-daemon:latest)  
-GridcoinResearch Daemon server on top of ubuntu docker
+[![](https://img.shields.io/docker/pulls/hdavid0510/gridcoinresearch-client-daemon?style=flat-square)](https://hub.docker.com/r/hdavid0510/gridcoinresearch-client-daemon) [![](https://img.shields.io/docker/cloud/build/hdavid0510/gridcoinresearch-client-daemon?style=flat-square)]() [![](https://img.shields.io/github/issues/hdavid0510/docker-gridcoinresearchd?style=flat-square)](https://github.com/hdavid0510/gridcoinresearch-client-daemon/issues)  
+[![](https://img.shields.io/docker/v/hdavid0510/gridcoinresearch-client-daemon/latest?style=flat-square)]() [![](https://img.shields.io/docker/image-size/hdavid0510/gridcoinresearch-client-daemon/latest?style=flat-square)]()  
+[![](https://img.shields.io/docker/v/hdavid0510/gridcoinresearch-client-daemon/dev?style=flat-square)]() [![](https://img.shields.io/docker/image-size/hdavid0510/gridcoinresearch-client-daemon/dev?style=flat-square)]()  
+Dockerized GridcoinResearch headless client on Ubuntu.
+
 
 ## Port Bindings
 | Option | Port# | Type | Service |
@@ -10,6 +12,7 @@ GridcoinResearch Daemon server on top of ubuntu docker
 |_Optional_|22|tcp|SSH __Not recommended in insecure environment!__|
 |_Optional_|31416|tcp| BOINC RPC|
 |_Optional_|32750|tcp| Gridcoin TestNet|
+
 
 ## Volume Bindings
 | Option | in Container | to Host | Note |
