@@ -18,11 +18,15 @@ RUN		apt-get -qqy -o=Dpkg::Use-Pty=0 --no-install-recommends install \
 			openssh-server nano wget curl byobu dialog \
 	&&	byobu-enable
 
+# Install supervisor
+RUN		apt-get -qqy -o=Dpkg::Use-Pty=0 -o=Dpkg::Options::=--force-confdef --no-install-recommends install \
+			supervisor
+
 # Install Gridcoin
 RUN		add-apt-repository -y ppa:gridcoin/gridcoin-stable \
 	&&	apt-get -qq  -o=Dpkg::Use-Pty=0 update \
 	&&	apt-get -qqy -o=Dpkg::Use-Pty=0 --no-install-recommends install \
-			supervisor gridcoinresearchd boinc boinc-client boinctui
+			gridcoinresearchd boinc boinc-client boinctui
 
 # Cleanup
 RUN		apt-get -qq  -o=Dpkg::Use-Pty=0 clean \
