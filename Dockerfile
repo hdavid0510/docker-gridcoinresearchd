@@ -5,16 +5,25 @@ LABEL mainainer="gdavid0510@gmail.com"
 WORKDIR /
 COPY files /
 
-# Install required packages 
+# Install system packages 
 RUN		apt-get update -qq \
 	&&	apt-get upgrade -y -qq \
 	&&	DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y -qq \
-			apt-utils bash-completion software-properties-common sudo \
-	&&	add-apt-repository -y ppa:gridcoin/gridcoin-stable \
+			apt-utils bash-completion software-properties-common sudo gpg-agent
+
+# Install essential packages
+RUN		apt-get install --no-install-recommends -y -qq \
+		openssh-server nano wget curl byobu dialog supervisor \
+	&&	byobu-enable
+
+# Install Gridcoin
+RUN		add-apt-repository -y ppa:gridcoin/gridcoin-stable \
 	&&	apt-get update -qq \
 	&&	apt-get install --no-install-recommends -y -qq \
-			supervisor openssh-server vim nano gridcoinresearchd boinc boinc-client boinctui wget curl byobu dialog \
-	&&	apt-get clean -qq \
+			gridcoinresearchd boinc boinc-client boinctui
+
+# Cleanup
+RUN		apt-get clean -qq \
 	&&	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Adjust permissions on copied files
@@ -28,8 +37,7 @@ RUN		chmod 755 /usr/bin/b /usr/bin/grc /grcupdate.sh /entrypoint.sh \
 	&&	mkdir -p /root/.ssh \
 	&&	chmod 700 /root/.ssh \
 	&&	touch /root/.ssh/authorized_keys \
-	&&	chmod 600 /root/.ssh/authorized_keys \
-	&&	byobu-enable
+	&&	chmod 600 /root/.ssh/authorized_keys
 
 # Port expose
 EXPOSE 22/tcp
