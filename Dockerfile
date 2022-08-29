@@ -1,5 +1,9 @@
-FROM ubuntu:20.04
+FROM --platform=$TARGETPLATFORM ubuntu:22.04
 LABEL mainainer="gdavid0510@gmail.com"
+
+# Copy basic scripts and configs
+WORKDIR /
+COPY files /
 
 # Install required packages 
 RUN		apt-get update -qq \
@@ -12,12 +16,9 @@ RUN		apt-get update -qq \
 			supervisor openssh-server vim nano gridcoinresearchd boinc boinc-client boinctui wget curl byobu dialog \
 	&&	apt-get clean -qq \
 	&&	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-	
-# Copy basic scripts and configs
-WORKDIR /root
-COPY files /
 
 # Adjust permissions on copied files
+WORKDIR /root
 RUN		chmod 755 /usr/bin/b /usr/bin/grc /grcupdate.sh /entrypoint.sh \
 	&&	ln -s /etc/supervisor/supervisord.conf /etc/supervisord.conf \
 	&&	mkdir -p /root/.GridcoinResearch \
