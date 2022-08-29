@@ -6,20 +6,20 @@ WORKDIR /
 COPY files /
 
 # Install system packages 
-RUN		apt-get update -qq \
-	&&	apt-get upgrade -y -qq \
-	&&	DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y -qq \
+RUN		apt-get update -qq -o=Dpkg::Use-Pty=0 \
+	&&	apt-get upgrade -qq -o=Dpkg::Use-Pty=0 -y \
+	&&	DEBIAN_FRONTEND=noninteractive apt-get -qq install --no-install-recommends -y \
 			apt-utils bash-completion software-properties-common sudo gpg-agent
 
 # Install essential packages
-RUN		apt-get install --no-install-recommends -y -qq \
+RUN		apt-get install -qq -o=Dpkg::Use-Pty=0 --no-install-recommends -y \
 		openssh-server nano wget curl byobu dialog supervisor \
 	&&	byobu-enable
 
 # Install Gridcoin
 RUN		add-apt-repository -y ppa:gridcoin/gridcoin-stable \
-	&&	apt-get update -qq \
-	&&	apt-get install --no-install-recommends -y -qq \
+	&&	apt-get update -qq -o=Dpkg::Use-Pty=0 \
+	&&	apt-get install -qq -o=Dpkg::Use-Pty=0 --no-install-recommends -y \
 			gridcoinresearchd boinc boinc-client boinctui
 
 # Cleanup
