@@ -1,5 +1,5 @@
 # docker-gridcoinresearchd
-[![](https://img.shields.io/docker/pulls/hdavid0510/gridcoinresearch-client-daemon?style=flat-square)](https://hub.docker.com/r/hdavid0510/gridcoinresearch-client-daemon) [![](https://img.shields.io/github/issues/hdavid0510/docker-gridcoinresearchd?style=flat-square)](https://github.com/hdavid0510/docker-gridcoinresearchd/issues)   
+[![](https://img.shields.io/docker/pulls/hdavid0510/gridcoinresearch-client-daemon?style=flat-square)](https://hub.docker.com/r/hdavid0510/gridcoinresearch-client-daemon) [![](https://img.shields.io/docker/cloud/build/hdavid0510/gridcoinresearch-client-daemon?style=flat-square)]() [![](https://img.shields.io/github/issues/hdavid0510/docker-gridcoinresearchd?style=flat-square)](https://github.com/hdavid0510/docker-gridcoinresearchd/issues)   
 Dockerized GridcoinResearch headless client on Ubuntu.
 
 
