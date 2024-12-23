@@ -1,4 +1,4 @@
-FROM --platform=$TARGETPLATFORM ubuntu:22.04
+FROM --platform=$TARGETPLATFORM ubuntu:24.04
 LABEL mainainer="gdavid0510@gmail.com"
 
 # Copy basic scripts and configs
@@ -7,14 +7,11 @@ COPY files /
 ENV DEBIAN_FRONTEND=noninteractive
 ENV RUNLEVEL=3
 
-# Install system packages 
+# Install essential packages
 RUN		apt-get -qq  -o=Dpkg::Use-Pty=0 update \
 	&&	apt-get -qqy -o=Dpkg::Use-Pty=0 upgrade \
 	&&	apt-get -qqy -o=Dpkg::Use-Pty=0 --no-install-recommends install \
-			apt-utils bash-completion software-properties-common sudo gpg-agent
-
-# Install essential packages
-RUN		apt-get -qqy -o=Dpkg::Use-Pty=0 --no-install-recommends install \
+			apt-utils bash-completion software-properties-common sudo gpg-agent \
 			openssh-server nano wget curl byobu dialog \
 	&&	byobu-enable
 
@@ -22,14 +19,12 @@ RUN		apt-get -qqy -o=Dpkg::Use-Pty=0 --no-install-recommends install \
 RUN		apt-get -qqy -o=Dpkg::Use-Pty=0 -o=Dpkg::Options::=--force-confdef --no-install-recommends install \
 			supervisor
 
-# Install Gridcoin
+# Install Gridcoin & cleanup
 RUN		add-apt-repository -y ppa:gridcoin/gridcoin-stable \
 	&&	apt-get -qq  -o=Dpkg::Use-Pty=0 update \
 	&&	apt-get -qqy -o=Dpkg::Use-Pty=0 --no-install-recommends install \
-			gridcoinresearchd boinc boinc-client boinctui
-
-# Cleanup
-RUN		apt-get -qq  -o=Dpkg::Use-Pty=0 clean \
+			gridcoinresearchd boinc boinc-client boinctui \
+	&&	apt-get -qq  -o=Dpkg::Use-Pty=0 clean \
 	&&	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Adjust permissions on copied files
