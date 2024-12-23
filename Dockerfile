@@ -7,29 +7,25 @@ COPY files /
 ENV DEBIAN_FRONTEND=noninteractive
 ENV RUNLEVEL=3
 
-# Install essential packages
+# Installing essential packages and environment setup
 RUN		apt-get -qq  -o=Dpkg::Use-Pty=0 update \
 	&&	apt-get -qqy -o=Dpkg::Use-Pty=0 upgrade \
 	&&	apt-get -qqy -o=Dpkg::Use-Pty=0 --no-install-recommends install \
 			apt-utils bash-completion software-properties-common sudo gpg-agent \
 			openssh-server nano wget curl byobu dialog \
-	&&	byobu-enable
-
-# Install supervisor
-RUN		apt-get -qqy -o=Dpkg::Use-Pty=0 -o=Dpkg::Options::=--force-confdef --no-install-recommends install \
+	&&	byobu-enable \
+	&&	apt-get -qqy -o=Dpkg::Use-Pty=0 -o=Dpkg::Options::=--force-confdef --no-install-recommends install \
 			supervisor
 
 # Install Gridcoin & cleanup
+WORKDIR /root
 RUN		add-apt-repository -y ppa:gridcoin/gridcoin-stable \
 	&&	apt-get -qq  -o=Dpkg::Use-Pty=0 update \
 	&&	apt-get -qqy -o=Dpkg::Use-Pty=0 --no-install-recommends install \
 			gridcoinresearchd boinc boinc-client boinctui \
 	&&	apt-get -qq  -o=Dpkg::Use-Pty=0 clean \
-	&&	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# Adjust permissions on copied files
-WORKDIR /root
-RUN		chmod 755 /usr/bin/b /usr/bin/grc /grcupdate.sh /entrypoint.sh \
+	&&	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+	&&	chmod 755 /usr/bin/b /usr/bin/grc /grcupdate.sh /entrypoint.sh \
 	&&	ln -s /etc/supervisor/supervisord.conf /etc/supervisord.conf \
 	&&	mkdir -p /root/.GridcoinResearch \
 	&&	mkdir -p /var/run/sshd \
